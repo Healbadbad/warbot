@@ -22,8 +22,11 @@ cv2.imwrite(filename, gray)
 # load the image as a PIL/Pillow image, apply OCR, and then delete
 # the temporary file
 text = pytesseract.image_to_string(Image.open(filename))
+cleantext = text.lower().replace(' ', '_')
 os.remove(filename)
 print(text)
+print(cleantext)
+
  
 
 cv2.imshow("Image", image)
