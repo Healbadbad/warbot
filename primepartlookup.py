@@ -34,7 +34,7 @@ def clean_item_name(dirtytext):
 	temptext = dirtytext.lower()
 	words = temptext.split(' ')
 	for word in ["chassis", "neuroptics", "systems"]:
-		if word in words:
+		if word in words and "blueprint" in words:
 			words = words[:-1]
 			break
 
