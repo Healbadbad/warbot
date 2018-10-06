@@ -39,13 +39,20 @@ def get_item_market_price(item):
     return (buyer_mean, buyer_stdev, seller_mean, seller_stdev)
 
 def get_item_ducats(item):
-    url = "https://warframe.market/items/" + item
+    url = "https://api.warframe.market/v1/items/" + item + "/orders?include=item"
     resp = requests.get(url)
+    data = resp.json()
+    ducat_price = 0
     
-    print(resp.json())
+    for set_item in data['include']['item']['items_in_set']:
+        if set_item['url_name'] == item:
+            ducat_price = set_item['ducats']
+            break
+
+    return ducat_price
 
 
 #print(get_item_market_price('saryn_prime_systems'))
 #print(get_item_market_price('volt_prime_neuroptics'))
 
-#print(get_item_ducats('volt_prime_neuroptics'))
+print(get_item_ducats('volt_prime_neuroptics'))
