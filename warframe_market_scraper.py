@@ -55,4 +55,4 @@ def get_item_ducats(item):
 #print(get_item_market_price('saryn_prime_systems'))
 #print(get_item_market_price('volt_prime_neuroptics'))
 
-print(get_item_ducats('volt_prime_neuroptics'))
+#print(get_item_ducats('volt_prime_neuroptics'))
