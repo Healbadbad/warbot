@@ -1,5 +1,6 @@
 from requests import get
 import json
+import re
 from statistics import stdev, mean
 
 class WarframeItem:
@@ -11,7 +12,7 @@ class WarframeItem:
         self.sellers = []
         self.ducat_value = 0
         self.clean_item_name(item_name)
-        #print(self.item_name)
+        print(self.item_name)
         self.warframe_api_url = self.warframe_api_url.format(self.item_name)
         self.request_data()
         self.get_market_data()
@@ -24,7 +25,7 @@ class WarframeItem:
                 break
 
         for word in words:
-            self.item_name += word + "_"
+            self.item_name += re.sub('\W+','', word) + "_"
         self.item_name = self.item_name[:-1]
 
         return self.item_name

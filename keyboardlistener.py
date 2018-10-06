@@ -2,6 +2,8 @@ from pynput import keyboard
 import primepartlookup
 
 
+relicOCR = primepartlookup.RelicOCR()
+
 def on_press(key):
     try:
         #print('alphanumeric key {0} pressed'.format(
@@ -10,9 +12,9 @@ def on_press(key):
             print("Exiting...")
             return False
         if key.char == '[':
-            primepartlookup.lookup_primeparts()
+            relicOCR.lookup_primeparts()
         if key.char == ']':
-            primepartlookup.lookup_primeparts(debug=True)
+            relicOCR.lookup_primeparts(debug=True)
 
 
     except AttributeError:
