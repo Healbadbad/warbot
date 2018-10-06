@@ -26,24 +26,6 @@ def print_table(itemstats, ducats):
 		tablestring += item + " \t\t| " + "{:0.2f}".format(itemstats[item][0]) + "\t\t| " + "{:0.2f}".format(itemstats[item][2]) + "\t\t| " + str(ducats[item]) + "\n"
 	return tablestring
 
-def clean_item_name(dirtytext):
-	# lowercase
-	# check for chassis, neuroptics, systems
-	# if true, remove blueprint from end
-	# replace space
-	temptext = dirtytext.lower()
-	words = temptext.split(' ')
-	for word in ["chassis", "neuroptics", "systems"]:
-		if word in words and "blueprint" in words:
-			words = words[:-1]
-			break
-
-	cleanName = ""
-	for word in words:
-		cleanName += word + "_"
-	cleanName = cleanName[:-1]
-	return cleanName
-
 def preprocess_blobs(image):
 	
 	kernel = np.ones((1, 1), np.uint8)
