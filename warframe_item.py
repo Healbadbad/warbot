@@ -1,6 +1,7 @@
 from requests import get
 import json
 from statistics import stdev, mean
+from math import inf
 
 class WarframeItem:
     def __init__(self, item_name):
@@ -63,6 +64,22 @@ class WarframeItem:
 
         return mean(quantity_scaled_list)
 
+    def get_min(self, data):
+        lowest = inf
+
+        for order in data:
+            lowest = min(order['platinum'], lowest)
+
+        return lowest
+
+    def get_max(self, data):
+        highest = 0
+
+        for order in data:
+            highest = max(order['platinum'], highest)
+
+        return highest
+
     def get_ducat_value(self):
         for set_item in self.json_data['include']['item']['items_in_set']:
             if set_item['url_name'] == self.item_name:
@@ -79,13 +96,17 @@ class WarframeItem:
         }
         if seller_stats:
             data['seller_stats'] = {
-                'stdev': self.get_stdev(self.sellers),
-                'mean': self.get_mean(self.sellers)
+                'min': "{0:.2f}".format(self.get_min(self.sellers)),
+                'max': "{0:.2f}".format(self.get_max(self.sellers)),
+                'stdev': "{0:.2f}".format(self.get_stdev(self.sellers)),
+                'mean': "{0:.2f}".format(self.get_mean(self.sellers))
             }
         if buyer_stats:
             data['buyer_stats'] = {
-                'stdev': self.get_stdev(self.buyers),
-                'mean': self.get_mean(self.buyers)
+                'min': "{0:.2f}".format(self.get_min(self.buyers)),
+                'max': "{0:.2f}".format(self.get_max(self.buyers)),
+                'stdev': "{0:.2f}".format(self.get_stdev(self.buyers)),
+                'mean': "{0:.2f}".format(self.get_mean(self.buyers))
             }
 
         if ducats:
