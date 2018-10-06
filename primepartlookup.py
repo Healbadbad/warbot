@@ -26,24 +26,6 @@ def print_table(itemstats):
 		tablestring += item + " \t\t| " + "{:0.2f}".format(itemstats[item][0]) + "\t\t| " + "{:0.2f}".format(itemstats[item][2]) + "\n"
 	return tablestring
 
-def clean_item_name(dirtytext):
-	# lowercase
-	# check for chassis, neuroptics, systems
-	# if true, remove blueprint from end
-	# replace space
-	temptext = dirtytext.lower()
-	words = temptext.split(' ')
-	for word in ["chassis", "neuroptics", "systems"]:
-		if word in words and "blueprint" in words:
-			words = words[:-1]
-			break
-
-	cleanName = ""
-	for word in words:
-		cleanName += word + "_"
-	cleanName = cleanName[:-1]
-	return cleanName
-
 def lookup_primeparts(count=4, debug=False):
 	mon = {"top": 0, "left": 0, "width": 2560, "height": 1440}
 	sct = mss.mss()
