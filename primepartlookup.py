@@ -44,6 +44,14 @@ def clean_item_name(dirtytext):
 	cleanName = cleanName[:-1]
 	return cleanName
 
+def preprocess_blobs(image):
+	
+	kernel = np.ones((1, 1), np.uint8)
+    img = cv2.dilate(img, kernel, iterations=1)
+    img = cv2.erode(img, kernel, iterations=1)
+	thresholded.append(cv2.threshold(part, 80, 205,
+		cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1])
+
 def lookup_primeparts(count=4, debug=False):
 	mon = {"top": 0, "left": 0, "width": 2560, "height": 1440}
 	sct = mss.mss()
@@ -70,39 +78,35 @@ def lookup_primeparts(count=4, debug=False):
 
 
 	#if args["preprocess"] == "thresh":
-	gray1 = cv2.threshold(part1, 80, 205,
-		cv2.THRESH_BINARY)[1]
-	gray2 = cv2.threshold(part2, 80, 205,
-		cv2.THRESH_BINARY)[1]
-	gray3 = cv2.threshold(part3, 80, 205,
-		cv2.THRESH_BINARY)[1]
-	gray4 = cv2.threshold(part4, 80, 205,
-		cv2.THRESH_BINARY)[1]
+	parts = [part1, part2, part3, part4]
+	thresholded = []
+	for part in parts:
+
 	#cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
 	filename = "{}-relics-gray.png".format(os.getpid())
 	cv2.imwrite(filename, gray)
 
-	grays = [gray1, gray2, gray3, gray4]
+	#grays = [gray1, gray2, gray3, gray4]
 
 	failures = "Failed to get item stats for: \n"
 	itemstats = {}
 	ducats = {}
 
-	for grayimage in grays:
-		filename = "{}.png".format(os.getpid())
-		cv2.imwrite(filename, grayimage)
+	for grayimage in thresholded:
 		if debug:
 			cv2.imshow("threshold", grayimage)
 			cv2.waitKey(0)
 			#cv2.imshow("part", part1)
 
-		# load the image as a PIL/Pillow image, apply OCR, and then delete
-		# the temporary file
-		text = pytesseract.image_to_string(Image.open(filename))
+		# Tesseract Config
+		# https://github.com/tesseract-ocr/tesseract/wiki/Command-Line-Usage
+		tesseract_config = r'--psm 3 --oem 1' 
+		text = pytesseract.image_to_string(grayimage, lang='eng', config=tesseract_config)
 		cleantext = clean_item_name(text)
-		os.remove(filename)
 		print(text)
 		print(cleantext)
+		if debug:
+			continue
 		try:
 
 			#print(pprint_stats(get_item_market_price(cleantext)))
