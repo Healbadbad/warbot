@@ -26,7 +26,7 @@ def print_table(itemstats):
 		tablestring += item + " \t\t| " + "{:0.2f}".format(itemstats[item][0]) + "\t\t| " + "{:0.2f}".format(itemstats[item][2]) + "\n"
 	return tablestring
 
-def lookup_primeparts(count=4):
+def lookup_primeparts(count=4, debug=False):
 	mon = {"top": 0, "left": 0, "width": 2560, "height": 1440}
 	sct = mss.mss()
 	img = numpy.asarray(sct.grab(mon))
@@ -61,7 +61,8 @@ def lookup_primeparts(count=4):
 	gray4 = cv2.threshold(part4, 80, 205,
 		cv2.THRESH_BINARY)[1]
 	#cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
-
+	filename = "{}-relics-gray.png".format(os.getpid())
+	cv2.imwrite(filename, gray)
 
 	grays = [gray1, gray2, gray3, gray4]
 
@@ -71,6 +72,10 @@ def lookup_primeparts(count=4):
 	for grayimage in grays:
 		filename = "{}.png".format(os.getpid())
 		cv2.imwrite(filename, grayimage)
+		if debug:
+			cv2.imshow("threshold", grayimage)
+			cv2.waitKey(0)
+			#cv2.imshow("part", part1)
 
 		# load the image as a PIL/Pillow image, apply OCR, and then delete
 		# the temporary file
@@ -106,8 +111,7 @@ if __name__ == "__main__()":
 
 #cv2.imshow("Image", img)
 #cv2.imshow("Output", gray)
-#cv2.imshow("gray1", gray1)
-#cv2.imshow("part1", part1)
+
 #cv2.imshow("part2", part2)
 #cv2.imshow("part3", part3)
 #cv2.imshow("part4", part4)

@@ -11,6 +11,8 @@ def on_press(key):
             return False
         if key.char == '[':
             primepartlookup.lookup_primeparts()
+        if key.char == ']':
+            primepartlookup.lookup_primeparts(debug=True)
 
 
     except AttributeError:
