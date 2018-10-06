@@ -4,10 +4,12 @@ import statistics
 
 def get_item_market_price(item):
     url = "https://api.warframe.market/v1/items/" + item + "/orders"
-    print (url)
+    print(url)
     resp = requests.get(url)
-    binary = resp.content
-    data = json.loads(binary)
+    #binary = resp.content
+    #data = json.loads(str(binary))
+    data = resp.json()
+    #print(data)
 
     buyer_price_list = []
     seller_price_list = []
@@ -36,9 +38,14 @@ def get_item_market_price(item):
 
     return (buyer_mean, buyer_stdev, seller_mean, seller_stdev)
 
+def get_item_ducats(item):
+    url = "https://warframe.market/items/" + item
+    resp = requests.get(url)
+    
+    print(resp.json())
 
 
+#print(get_item_market_price('saryn_prime_systems'))
+#print(get_item_market_price('volt_prime_neuroptics'))
 
-
-print(get_item_market_price('saryn_prime_systems'))
-print(get_item_market_price('volt_prime_neuroptics'))
+#print(get_item_ducats('volt_prime_neuroptics'))
