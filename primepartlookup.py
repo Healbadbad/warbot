@@ -7,7 +7,7 @@ import cv2
 import os
 import pyautogui
 from warframe_market_scraper import get_item_market_price
-
+from warframe_market_scraper import get_item_ducats
 
 def pprint_stats(stats):
 	pstring = ""
@@ -17,13 +17,13 @@ def pprint_stats(stats):
 	pstring+= "\t stdev: {0:.1f}".format(stats[3]) + "\n"
 	return pstring
 
-def print_table(itemstats):
+def print_table(itemstats, ducats):
 	tablestring = ""
-	tablestring += "Item Name:\t\t\t| avg buy \t| avg sell"
+	tablestring += "Item Name:\t\t\t| avg buy \t| avg sell \t| ducats "
 	tablestring += "\n"
 
 	for item in itemstats.keys():
-		tablestring += item + " \t\t| " + "{:0.2f}".format(itemstats[item][0]) + "\t\t| " + "{:0.2f}".format(itemstats[item][2]) + "\n"
+		tablestring += item + " \t\t| " + "{:0.2f}".format(itemstats[item][0]) + "\t\t| " + "{:0.2f}".format(itemstats[item][2]) + "\t\t| " + str(ducats[item]) + "\n"
 	return tablestring
 
 def lookup_primeparts(count=4, debug=False):
@@ -68,6 +68,7 @@ def lookup_primeparts(count=4, debug=False):
 
 	failures = "Failed to get item stats for: \n"
 	itemstats = {}
+	ducats = {}
 
 	for grayimage in grays:
 		filename = "{}.png".format(os.getpid())
@@ -88,10 +89,12 @@ def lookup_primeparts(count=4, debug=False):
 
 			#print(pprint_stats(get_item_market_price(cleantext)))
 			itemstats[cleantext] = get_item_market_price(cleantext)
+			ducats[cleantext] = get_item_ducats(cleantext)
 			#alerttext += "" + cleantext + ":\n"
 			#alerttext += itemstats
 			#alerttext += "\n"
-		except:
+		except:# Exception as e:
+			#print(e.what)
 			#print("Item Name:\t\t\t| avg buy | avg sell")
 			failures += " - " + cleantext + "\n"
 
@@ -99,7 +102,7 @@ def lookup_primeparts(count=4, debug=False):
 	print("\n")
 	print(failures)
 
-	stattable = print_table(itemstats)
+	stattable = print_table(itemstats, ducats)
 	print(stattable)
 
 
