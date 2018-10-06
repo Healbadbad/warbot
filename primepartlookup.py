@@ -26,6 +26,24 @@ def print_table(itemstats):
 		tablestring += item + " \t\t| " + "{:0.2f}".format(itemstats[item][0]) + "\t\t| " + "{:0.2f}".format(itemstats[item][2]) + "\n"
 	return tablestring
 
+def clean_item_name(dirtytext):
+	# lowercase
+	# check for chassis, neuroptics, systems
+	# if true, remove blueprint from end
+	# replace space
+	temptext = dirtytext.lower()
+	words = temptext.split(' ')
+	for word in ["chassis", "neuroptics", "systems"]:
+		if word in words:
+			words = words[:-1]
+			break
+
+	cleanName = ""
+	for word in words:
+		cleanName += word + "_"
+	cleanName = cleanName[:-1]
+	return cleanName
+
 def lookup_primeparts(count=4, debug=False):
 	mon = {"top": 0, "left": 0, "width": 2560, "height": 1440}
 	sct = mss.mss()
@@ -80,7 +98,7 @@ def lookup_primeparts(count=4, debug=False):
 		# load the image as a PIL/Pillow image, apply OCR, and then delete
 		# the temporary file
 		text = pytesseract.image_to_string(Image.open(filename))
-		cleantext = text.lower().replace(' ', '_')
+		cleantext = clean_item_name(text)
 		os.remove(filename)
 		print(text)
 		print(cleantext)
