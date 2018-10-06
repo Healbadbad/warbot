@@ -32,17 +32,6 @@ class WarframeItemPrinter:
 
         print(tabulate(data, headers=["Name", "Min Sell Price", "Sell Price Average", "Max Buy Price", "Buy Price Average", "Ducats", "Message"]))
         
-<<<<<<< HEAD
 if __name__ == "__main__()":
-    printer = WarframeItemPrinter([WarframeItem('Neo B1 Intact'), WarframeItem('Saryn Prime Chassis Blueprint'), WarframeItem('Tigris Prime Blueprint')])
+    printer = WarframeItemPrinter([WarframeItem('Paris Prime Lower Limb'), WarframeItem('Saryn Prime Chassis Blueprint'), WarframeItem('Tigris Prime Blueprint'), WarframeItem('Forma Blueprint')])
     printer.tabulate()
-
-# item1 = WarframeItem('Saryn Prime Chassis Blueprint')
-# item2 = WarframeItem('Volt Prime Blueprint')
-# printer = WarframeItemPrinter([item1, item2])
-# printer.tabulate()
-=======
-printer = WarframeItemPrinter([WarframeItem('Paris Prime Lower Limb'), WarframeItem('Saryn Prime Chassis Blueprint'), WarframeItem('Tigris Prime Blueprint'), WarframeItem('Forma Blueprint')])
-
-printer.tabulate()
->>>>>>> 974637ed6a58d8c116edad28379d275bcce6089b
