@@ -15,6 +15,7 @@ class WarBot:
         self.selectorOverlayThread = None
 
         self.killSelector = multiprocessing.Value('b', False)
+        self.selectorCoordinates = multiprocessing.Array('i', range(4))
 
 
 
@@ -29,28 +30,21 @@ class WarBot:
                 self.relicOCR.lookup_primeparts()
             if key.char == ']':
                 self.relicOCR.lookup_primeparts(debug=True)
-            if key.char == 'p':
+            if key.char == '\'':
                 print("ocrSelectorState: " + str(self.ocrSelectorState))
-                print('module name:', __name__)
-                print('parent process:', os.getppid())
-                print('process id:', os.getpid())
                 if self.ocrSelectorState:
-                    print("Supposed to kill selector")
                     self.killSelector.value = True
                     self.selectorOverlayThread.join()
-                    print("after join")
+                    print("selector coordinates:")
+                    print(self.selectorCoordinates[:])
+                    self.relicOCR.lookup_by_coordinates(self.selectorCoordinates)
 
-                    #self.selectorOverlay = None
-                    pass
                 else:
                     print("starting OCR Selector")
                     self.killSelector.value = False
-
-                    self.selectorOverlay = WarRectSelector(self.killSelector)
+                    self.selectorOverlay = WarRectSelector(self.killSelector, self.selectorCoordinates)
                     self.selectorOverlayThread = multiprocessing.Process(target=self.selectorOverlay.create_Selector, args=()) 
                     self.selectorOverlayThread.start()
-                    #self.selectorOverlayThread.join()
-                    print("here")
 
                 self.ocrSelectorState = not self.ocrSelectorState
 

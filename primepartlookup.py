@@ -29,6 +29,20 @@ class RelicOCR:
 		img = cv2.threshold(img, 80, 125, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
 		return img
 
+	def lookup_by_coordinates(self, coordinates, debug=False):
+		sct = mss.mss()
+		mon = {"top": coordinates[1],
+			 "left": coordinates[0],
+			 "width": coordinates[2] -coordinates[0],
+			 "height": coordinates[3] - coordinates[1]}
+
+		img = np.asarray(sct.grab(mon))
+		gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+		parts = [gray]
+
+		self.process_image_parts(parts, debug=debug)
+
+
 	def lookup_primeparts(self, count=4, debug=False):
 		sct = mss.mss()
 		img = np.asarray(sct.grab(self.mon))
@@ -46,6 +60,10 @@ class RelicOCR:
 		part4 = gray[610:655, 1868:1868+boxwidth]
 
 		parts = [part1, part2, part3, part4]
+
+		self.process_image_parts(parts, debug=debug)
+
+	def process_image_parts(self, parts, debug=False):
 		thresholded = []
 		for part in parts:
 			print("preprocessing")

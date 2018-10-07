@@ -7,10 +7,10 @@ import multiprocessing
 
 class WarRectSelector:
 
-	def __init__(self, toDie):
+	def __init__(self, toDie, selectorCoordinates):
 		print("Instantiating WarRectSelector")
 		self.toDie = toDie
-		pass
+		self.selectorCoordinates = selectorCoordinates
 
 	def create_Selector(self):
 		print("create WarRectSelector")
@@ -48,10 +48,13 @@ class WarRectSelector:
 			self.root.update_idletasks()
 			self.root.update()
 			if self.toDie.value:
-				print("KILLING SELECTOR")
+				print("Selector Returning")
 				self.root.destroy()
+				self.selectorCoordinates[0] = self.rectcoords[0]
+				self.selectorCoordinates[1] = self.rectcoords[1]
+				self.selectorCoordinates[2] = self.rectcoords[2]
+				self.selectorCoordinates[3] = self.rectcoords[3]
 				exit()
-				print("after exit?")
 		    #time.sleep(1)
 
 	def draw(self):
