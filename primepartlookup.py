@@ -19,22 +19,32 @@ class RelicOCR:
 		self.tesseract_config = r'--psm 3' 
 		self.mon = {"top": 0, "left": 0, "width": 2560, "height": 1440}
 
-	def preprocess_image_slice(self, grayimage):
+	def preprocess_image_slice(self, grayimage, invert=True):
 		img = grayimage
 		#img = cv2.resize(grayimage, None, fx=0.75, fy=0.75, interpolation=cv2.INTER_CUBIC)
 		kernel = np.ones((1, 1), np.uint8)
 		img = cv2.dilate(img, kernel, iterations=1)
 		img = cv2.erode(img, kernel, iterations=1)
 		img = cv2.GaussianBlur(img, (3, 3), 0)
-		img = cv2.threshold(img, 80, 125, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+		if invert:
+			img = cv2.threshold(img, 80, 205, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+			img = 255 - img
+		else:
+			img = cv2.threshold(img, 80, 125, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+
 		return img
 
 	def lookup_by_coordinates(self, coordinates, debug=False):
 		sct = mss.mss()
+		width = coordinates[2] -coordinates[0]
+		height = coordinates[3] - coordinates[1]
+		if width < 0 or height < 0:
+			print("Draw a better box")
+			return
 		mon = {"top": coordinates[1],
 			 "left": coordinates[0],
-			 "width": coordinates[2] -coordinates[0],
-			 "height": coordinates[3] - coordinates[1]}
+			 "width": width,
+			 "height": height}
 
 		img = np.asarray(sct.grab(mon))
 		gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -66,7 +76,6 @@ class RelicOCR:
 	def process_image_parts(self, parts, debug=False):
 		thresholded = []
 		for part in parts:
-			print("preprocessing")
 			thresholded.append(self.preprocess_image_slice(part))
 
 		failures = "Failed to get item stats for: \n"

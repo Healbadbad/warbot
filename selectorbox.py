@@ -7,13 +7,15 @@ import multiprocessing
 
 class WarRectSelector:
 
-	def __init__(self, toDie, selectorCoordinates):
-		print("Instantiating WarRectSelector")
+	def __init__(self, toDie, selectorActive, selectorCoordinates):
+		#print("Instantiating WarRectSelector")
 		self.toDie = toDie
+		self.selectorActive = selectorActive
+		self.prevActiveState = False
 		self.selectorCoordinates = selectorCoordinates
 
 	def create_Selector(self):
-		print("create WarRectSelector")
+		#print("create WarRectSelector")
 		self.root = tkinter.Tk()
 		self.mouse = Controller()
 		self.rectcoords = [self.mouse.position[0], self.mouse.position[1], 100,100]
@@ -50,19 +52,33 @@ class WarRectSelector:
 			if self.toDie.value:
 				print("Selector Returning")
 				self.root.destroy()
-				self.selectorCoordinates[0] = self.rectcoords[0]
-				self.selectorCoordinates[1] = self.rectcoords[1]
-				self.selectorCoordinates[2] = self.rectcoords[2]
-				self.selectorCoordinates[3] = self.rectcoords[3]
 				exit()
 		    #time.sleep(1)
 
 	def draw(self):
 		#self.canvas.pack()
 		#self.canvas.update()
-		self.rectcoords[2] = self.mouse.position[0]
-		self.rectcoords[3] = self.mouse.position[1]
-		self.canvas.coords(self.a, self.rectcoords)
+
+		if self.prevActiveState != self.selectorActive.value:
+			if self.prevActiveState:
+				# End selection, nothing to be done
+				pass
+			else:
+				# start selection
+				self.rectcoords[0] = self.mouse.position[0]
+				self.rectcoords[1] = self.mouse.position[1]
+			self.prevActiveState = self.selectorActive.value
+		if self.selectorActive.value:
+			self.rectcoords[2] = self.mouse.position[0]
+			self.rectcoords[3] = self.mouse.position[1]
+			self.selectorCoordinates[0] = self.rectcoords[0]
+			self.selectorCoordinates[1] = self.rectcoords[1]
+			self.selectorCoordinates[2] = self.rectcoords[2]
+			self.selectorCoordinates[3] = self.rectcoords[3]
+			self.canvas.coords(self.a, self.rectcoords)
+		else:
+			self.canvas.coords(self.a, [0, 0, 0, 0])
+		
 		self.canvas.after(1, self.draw)
 
 class BasicCanvas:
