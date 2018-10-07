@@ -25,6 +25,9 @@ class WarframeItem:
                 words = words[:-1]
                 break
 
+            if 'relic' in words:
+                words = words[:-1] + ['intact']
+
         for word in words:
             self.item_name += re.sub('\W+','', word) + "_"
         self.item_name = self.item_name[:-1]
